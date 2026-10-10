@@ -1,0 +1,45 @@
+package org.example;
+
+import java.util.ArrayList;
+
+class CStack {
+    private ArrayList<Integer> stack;
+    private int top = -1;
+    public CStack() {
+        stack = new ArrayList<>();
+    }
+
+    boolean isEmpty() {
+        if(top == -1) {
+            System.out.println("Yes the stack is empty.");
+            return true;
+        } else {
+            System.out.println("No the stack is not empty");
+            return false;
+        }
+    }
+
+    void push(int num) {
+        stack.add(num);
+        System.out.println("Newly added num: " + num);
+        top++;
+    }
+
+    void pop() {
+        if(!isEmpty()) {
+            stack.remove(top--);
+        } else {
+            System.out.println("Stack is empty, cannot perform pop operation.");
+        }
+    }
+
+    int peek() {
+        if(isEmpty()) {
+            System.out.println("Stack is empty.");
+        } else {
+            return stack.get(top);
+        }
+        return 0;
+    }
+
+}
