@@ -1,0 +1,49 @@
+Logger.java
+package SingletonImp;
+
+public class Logger {
+
+    private static Logger instance;
+
+    private Logger() {}
+
+    public static Logger getInstance() {
+        if(instance == null) {
+            instance = new Logger();
+        }
+        return instance;
+    }
+
+    public void info(String message) {
+        System.out.println("[INFO] " + message);
+    }
+
+    public void warning(String message) {
+        System.out.println("[WARNING] " + message);
+    }
+
+    public void error(String message) {
+        System.out.println("[ERROR] " + message);
+    }
+}
+
+Main.java
+
+package org.example;
+
+import SingletonImp.Logger;
+import SingletonImp.Singleton;
+
+public class Main {
+    public static void main(String[] args) {
+
+        Logger logger = Logger.getInstance();
+
+        logger.error("Error message...");
+        logger.info("Info message...");
+        logger.warning("Warning message...");
+
+        Logger anotherLogger = Logger.getInstance();
+        System.out.println(logger == anotherLogger);
+    }
+}
