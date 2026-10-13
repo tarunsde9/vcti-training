@@ -1,0 +1,104 @@
+Vehicle.java
+package FactoryDP;
+
+public interface Vehicle {
+
+    String getType();
+    int getNoOfWheels();
+    int getCapacity();
+
+}
+
+Bike.java
+package FactoryDP;
+
+public class Bike implements Vehicle {
+    @Override
+    public String getType() {
+        return "This is a bike.";
+    }
+    public int getNoOfWheels() {
+        return 2;
+    }
+    public int getCapacity() {
+        return 2;
+    }
+}
+
+Car.java
+package FactoryDP;
+
+public class Car implements Vehicle {
+    @Override
+    public String getType() {
+        return "This is a car.";
+    }
+
+    @Override
+    public int getNoOfWheels() {
+        return 4;
+    }
+
+    @Override
+    public int getCapacity() {
+        return 5;
+    }
+}
+
+Truck.java
+
+package FactoryDP;
+
+public class Truck implements Vehicle {
+    @Override
+    public String getType() {
+        return "This is a truck.";
+    }
+
+    @Override
+    public int getNoOfWheels() {
+        return 6;
+    }
+
+    @Override
+    public int getCapacity() {
+        return 3;
+    }
+}
+
+VehicleFactory.java
+package FactoryDP;
+
+public class VehicleFactory {
+    Vehicle obj;
+    public Vehicle getInstance(String type) {
+        if(type.equals("bike")) {
+            obj = new Bike();
+        } else if(type.equals("car")) {
+            obj = new Car();
+        } else if(type.equals("truck")) {
+            obj = new Truck();
+        }
+        return obj;
+    }
+}
+
+Main.java
+package org.example;
+
+import FactoryDP.Vehicle;
+import FactoryDP.VehicleFactory;
+
+public class Main {
+    public static void main(String[] args) {
+        VehicleFactory v = new VehicleFactory();
+
+        Vehicle instance = v.getInstance("car");
+        Vehicle instance2 = v.getInstance("bike");
+
+        System.out.println(instance.getType());
+
+        System.out.println(instance2.getNoOfWheels());
+
+    }
+}
