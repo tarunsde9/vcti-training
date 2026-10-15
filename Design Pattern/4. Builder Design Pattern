@@ -1,0 +1,81 @@
+package Builder;
+
+public class Computer {
+    private String CPU;
+    private int RAM;
+    private int storage;
+    private String graphics_card;
+    private String os;
+
+    private Computer(Builder builder) {
+        this.CPU = builder.CPU;
+        this.RAM = builder.RAM;
+        this.storage = builder.storage;
+        this.graphics_card = builder.graphics_card;
+        this.os = builder.OS;
+    }
+
+    public static class Builder {
+        private String CPU;
+        private int RAM;
+        private int storage;
+        private String graphics_card;
+        private String OS;
+
+        public Builder setCPU(String _CPU) {
+            this.CPU = _CPU;
+            return this;
+        }
+
+        public Builder setRAM(int _RAM) {
+            this.RAM = _RAM;
+            return this;
+        }
+
+        public Builder setStorage(int _storage) {
+            this.storage = _storage;
+            return this;
+        }
+
+        public Builder setGraphics_card(String _graphics_card) {
+            this.graphics_card = _graphics_card;
+            return this;
+        }
+
+        public Builder setOS(String _OS) {
+            this.OS = _OS;
+            return this;
+        }
+
+        public Computer build() {
+            return new Computer(this);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Computer{" +
+                "CPU='" + CPU + '\'' +
+                ", RAM=" + RAM +
+                ", storage=" + storage +
+                ", graphics_card='" + graphics_card + '\'' +
+                ", os='" + os + '\'' +
+                '}';
+    }
+}
+
+package Builder;
+
+public class Shop {
+    public static void main(String[] args) {
+        Computer pc = new Computer.Builder()
+                .setCPU("Ryzen")
+                .setOS("Windows")
+                .setGraphics_card("Nvidia")
+                .setStorage(2048)
+                .setRAM(64)
+                .build();
+
+        System.out.println(pc.toString());
+    }
+}
