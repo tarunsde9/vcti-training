@@ -1,0 +1,83 @@
+LinkedList.java
+public class LinkedList {
+    Node head;
+    Node last;
+    LinkedList() { }
+
+    void add(int val) {
+        if(head == null) {
+            head = new Node(val);
+            last = head;
+        } else {
+            last.next = new Node(val);
+            last = last.next;
+        }
+    }
+
+    void remove(int val) {
+        if(head == null) {
+            System.out.println("The LinkedList is empty.");
+            return;
+        }
+
+        if(head.val == val) {
+            head = head.next;
+            if(head == null) {
+                last = null;
+            }
+            return;
+        }
+
+        Node temp = head;
+        Node prev = null;
+        while(temp != null) {
+            if(temp.val == val) {
+                prev.next = temp.next;
+                if(temp == last) {
+                    last = prev;
+                }
+                return;
+            }
+            prev = temp;
+            temp = temp.next;
+        }
+        System.out.println("Element is not found in the LinkedList.");
+    }
+
+    void printValues() {
+        Node temp = head;
+        while(temp != null) {
+            System.out.print(temp.val + " ");
+            temp = temp.next;
+        }
+    }
+}
+
+Node.java
+class Node {
+    int val;
+    Node next;
+    Node(int _val) {
+        this.val = _val;
+    }
+}
+
+Main.java
+class Main {
+    public static void main(String[] args) {
+        LinkedList ll = new LinkedList();
+        ll.remove(2);
+        ll.add(3);
+        ll.add(2);
+        ll.add(643);
+        ll.add(5);
+        ll.remove(5);
+        ll.add(9);
+        ll.add(23);
+        ll.remove(23);
+        ll.add(999);
+        ll.remove(99922129);
+
+        ll.printValues();
+    }
+}
