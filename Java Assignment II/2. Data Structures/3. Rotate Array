@@ -1,0 +1,49 @@
+RotateArray.java
+public class RotateArray {
+    void rotate(int[] array, int k) {
+        int n = array.length;
+        if(n == 0) {
+            System.out.println("This array contains no element.");
+            return;
+        }
+
+        k %= n;
+        reverse(array, 0, n-1);
+        reverse(array, 0, k-1);
+        reverse(array, k, n-1);
+
+        return;
+    }
+
+    void reverse(int[] array, int start, int end) {
+        while(start <= end) {
+            int temp = array[start];
+            array[start] = array[end];
+            array[end] = temp;
+            start++;
+            end--;
+        }
+    }
+}
+
+Main.java
+class Main {
+    public static void main(String[] args) {
+        int[] arr = new int[]{1,4,5,6,7,10,11,42,55,95,124};
+
+        System.out.println("Array before rotation: ");
+        for(int i=0; i<arr.length; i++) {
+            System.out.print(arr[i] + " ");
+        }
+
+        RotateArray r = new RotateArray();
+        r.rotate(arr, 5);
+
+        System.out.println();
+        System.out.println("Array after rotation: ");
+        for(int i=0; i<arr.length; i++) {
+            System.out.print(arr[i] + " ");
+        }
+
+    }
+}
