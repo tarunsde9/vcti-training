@@ -1,0 +1,42 @@
+// LinkedList reversal logic:
+
+void reverse() {
+    if(head == null)
+        return;
+
+    Node prev = null;
+    last = head;
+    Node temp = head;
+    while(temp != null) {
+        Node curr = temp;
+        temp = temp.next;
+        curr.next = prev;
+        prev = curr;
+    }
+    head = prev;
+}
+
+Main.java
+class Main {
+    public static void main(String[] args) {
+        LinkedList ll = new LinkedList();
+        ll.remove(2);
+        ll.add(3);
+        ll.add(2);
+        ll.add(643);
+        ll.add(5);
+        ll.remove(5);
+        ll.add(9);
+        ll.add(23);
+        ll.remove(23);
+        ll.add(999);
+        ll.remove(99922129);
+
+        ll.printValues();
+
+        ll.reverse();
+
+        System.out.println();
+        ll.printValues();
+    }
+}
