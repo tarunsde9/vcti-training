@@ -1,0 +1,95 @@
+Stack.java
+import java.util.ArrayList;
+
+class Stack {
+    private ArrayList<Integer> stack;
+    private int top = -1;
+    public Stack() {
+        stack = new ArrayList<>();
+    }
+
+    boolean isEmpty() {
+        if(top == -1) {
+            System.out.println("Yes the stack is empty.");
+            return true;
+        } else {
+            System.out.println("No the stack is not empty");
+            return false;
+        }
+    }
+
+    void push(int num) {
+        stack.add(num);
+        System.out.println("Newly added num: " + num);
+        top++;
+    }
+
+    void pop() {
+        if(!isEmpty()) {
+            stack.remove(top--);
+        } else {
+            System.out.println("Stack is empty, cannot perform pop operation.");
+        }
+    }
+
+    int peek() {
+        if(isEmpty()) {
+            System.out.println("Stack is empty.");
+            return -1;
+        } else {
+            return stack.get(top);
+        }
+    }
+
+}
+
+Queue.java
+import java.util.ArrayList;
+
+public class Queue {
+    private ArrayList<Integer> queue;
+
+    public Queue() {
+        queue = new ArrayList<>();
+    }
+
+    void push(int val) {
+        queue.add(val);
+    }
+
+    int pop() {
+        if(queue.isEmpty()) {
+            System.out.println("Queue is empty.");
+            return -1;
+        }
+        return queue.remove(0);
+    }
+
+    void printQ() {
+        for(int i=0; i<queue.size(); i++) {
+            System.out.print(queue.get(i) + " ");
+        }
+        System.out.println();
+        return;
+    }
+}
+
+Main.java
+class Main {
+    public static void main(String[] args) {
+        Queue q = new Queue();
+        q.push(4);
+        q.push(2);
+        q.push(99);
+        q.push(838);
+        q.push(77);
+
+        q.printQ();
+
+        System.out.println(q.pop());
+        System.out.println(q.pop());
+        System.out.println(q.pop());
+
+        q.printQ();
+    }
+}
