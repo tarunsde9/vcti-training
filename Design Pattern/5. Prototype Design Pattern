@@ -1,0 +1,152 @@
+package Prototype;
+
+public interface Shape {
+    public Shape clone();
+}
+
+package Prototype;
+
+public class Circle implements Shape {
+
+    private String color;
+    private int position;
+    private int radius;
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
+    public int getRadius() {
+        return radius;
+    }
+
+    public void setRadius(int radius) {
+        this.radius = radius;
+    }
+
+    @Override
+    public String toString() {
+        return "Circle{" +
+                "color='" + color + '\'' +
+                ", position=" + position +
+                ", radius=" + radius +
+                '}';
+    }
+
+    @Override
+    public Circle clone() {
+        Circle copied = new Circle();
+
+        copied.setColor(this.color);
+        copied.setPosition(this.position);
+        copied.setRadius(this.radius);
+
+        return copied;
+    }
+}
+
+package Prototype;
+
+public class Rectangle implements Shape {
+
+    private String color;
+    private int position;
+    private int length;
+    private int breadth;
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
+    public int getLength() {
+        return length;
+    }
+
+    public void setLength(int length) {
+        this.length = length;
+    }
+
+    public int getBreadth() {
+        return breadth;
+    }
+
+    public void setBreadth(int breadth) {
+        this.breadth = breadth;
+    }
+
+    @Override
+    public String toString() {
+        return "Rectangle{" +
+                "color='" + color + '\'' +
+                ", position=" + position +
+                ", length=" + length +
+                ", breadth=" + breadth +
+                '}';
+    }
+
+    @Override
+    public Rectangle clone() {
+        Rectangle copied = new Rectangle();
+
+        copied.setColor(this.color);
+        copied.setPosition(this.position);
+        copied.setLength(this.length);
+        copied.setBreadth(this.breadth);
+
+        return copied;
+    }
+}
+
+package Prototype;
+
+public class GraphicsEditorApp {
+    public static void main(String[] args) {
+
+        Circle c1 = new Circle();
+        c1.setRadius(9);
+        c1.setPosition(123);
+        c1.setColor("yellow");
+
+        Circle c2 = c1.clone();
+        c2.setPosition(321);
+
+        System.out.println(c1);
+        System.out.println(c2);
+
+        Rectangle r1 = new Rectangle();
+        r1.setPosition(456);
+        r1.setColor("blue");
+        r1.setLength(6);
+        r1.setBreadth(9);
+
+        Rectangle r2 = r1.clone();
+        r2.setPosition(654);
+
+        System.out.println(r1);
+        System.out.println(r2);
+    }
+}
