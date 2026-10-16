@@ -1,0 +1,26 @@
+class Main {
+    public static void main(String[] args) {
+        firstNonRepeatingCharacter.fnrc("TarunKumar");
+    }
+}
+
+public class firstNonRepeatingCharacter {
+    public static void fnrc(String target) {
+        int[] hash = new int[26];
+        for(int i=0; i<target.length(); i++) {
+            char ch = target.charAt(i);
+            if(Character.isLowerCase(ch))
+                hash[ch-'a']++;
+            else
+                hash[ch-'A']++;
+        }
+        for(int i=0; i<target.length(); i++) {
+            char ch = target.charAt(i);
+            if((Character.isLowerCase(ch) && hash[ch-'a'] == 1) || Character.isUpperCase(ch) && hash[ch-'A'] == 1) {
+                System.out.println(ch);
+                return;
+            }
+        }
+        System.out.println("No non-repeating character found in the string.");
+    }
+}
