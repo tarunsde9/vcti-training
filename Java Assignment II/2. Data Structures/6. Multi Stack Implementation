@@ -1,0 +1,68 @@
+Main.java
+class Main {
+    public static void main(String[] args) {
+        MultiStack ms = new MultiStack(3);
+
+        ms.push(10);
+        ms.push(20);
+        ms.push(30);
+        ms.push(40);
+        ms.push(50);
+        ms.push(60);
+        ms.push(70);
+
+        ms.display();
+
+        System.out.println("Popped: " + ms.pop());
+        System.out.println("Popped: " + ms.pop());
+
+        ms.display();
+    }
+}
+
+MultiStack.java
+import java.util.ArrayList;
+import java.util.Stack;
+
+public class MultiStack {
+    private int capacity;
+    private ArrayList<Stack<Integer>> stacks;
+
+    MultiStack(int cap) {
+        this.capacity = cap;
+        stacks = new ArrayList<>();
+    }
+
+    private Stack<Integer> fetchLast() {
+        if(stacks.isEmpty()) return null;
+
+        return stacks.get(stacks.size() - 1);
+    }
+
+    void push(int val) {
+        Stack<Integer> lastStack = fetchLast();
+        if(lastStack == null || lastStack.size() == capacity) {
+            Stack<Integer> newStack = new Stack<>();
+            stacks.add(newStack);
+            lastStack = newStack;
+        }
+        lastStack.add(val);
+    }
+
+    public int pop() {
+        Stack<Integer> lastStack = fetchLast();
+        if(lastStack == null) {
+            System.out.println("MultiStack is empty.");
+            return -1;
+        }
+
+        int val = lastStack.pop();
+        if(lastStack.isEmpty())
+            stacks.remove(stacks.size() -1 );
+        return val;
+    }
+
+    public void display() {
+        System.out.println("MultiStack: " + stacks);
+    }
+}
