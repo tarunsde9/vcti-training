@@ -1,0 +1,40 @@
+Main.java
+class Main {
+    public static void main(String[] args) {
+        int[] ans = new int[1];
+        ans[0] = Integer.MIN_VALUE;
+        TreeNode root = new TreeNode(-10);
+
+        root.left = new TreeNode(9);
+        root.right = new TreeNode(20);
+
+        root.right.left = new TreeNode(15);
+        root.right.right = new TreeNode(7);
+
+        MaxSum.maxPathSum(root, ans);
+        System.out.println("The maximum path sum is : " + ans[0]);
+    }
+}
+
+MaxSum.java
+public class MaxSum {
+
+    public static int maxPathSum(TreeNode root, int[] ans) {
+        if(root == null) return 0;
+
+        int left = Math.max(0, maxPathSum(root.left, ans));
+        int right = Math.max(0, maxPathSum(root.right, ans));
+        ans[0] = Math.max(ans[0], root.val + left + right);
+        return root.val + Math.max(left, right);
+    }
+}
+
+class TreeNode {
+    int val;
+    TreeNode left;
+    TreeNode right;
+
+    TreeNode(int val) {
+        this.val = val;
+    }
+}
