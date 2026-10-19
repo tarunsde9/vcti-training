@@ -1,0 +1,95 @@
+package AbstractFactory;
+
+public interface Button {
+    void render();
+}
+
+package AbstractFactory;
+
+public class DarkButton implements Button {
+    @Override
+    public void render() {
+        System.out.println("Rendering dark button.");
+    }
+}
+
+package AbstractFactory;
+
+public class LightButton implements Button {
+    @Override
+    public void render() {
+        System.out.println("Rendering light button.");
+    }
+}
+
+package AbstractFactory;
+
+public interface TextField {
+    void render();
+}
+
+package AbstractFactory;
+
+public class DarkTextField implements TextField {
+    @Override
+    public void render() {
+        System.out.println("Rendering dark text field.");
+    }
+}
+
+package AbstractFactory;
+
+public class LightTextField implements TextField {
+    @Override
+    public void render() {
+        System.out.println("Rendering light text field.");
+    }
+}
+
+package AbstractFactory;
+
+public interface GUIFactory {
+    Button createButton();
+    TextField createTextField();
+}
+
+package AbstractFactory;
+
+public class DarkGUIFactory implements GUIFactory {
+    @Override
+    public Button createButton() {
+        return new DarkButton();
+    }
+
+    @Override
+    public TextField createTextField() {
+        return new DarkTextField();
+    }
+}
+
+package AbstractFactory;
+
+public class LightGUIFactory implements GUIFactory {
+    @Override
+    public Button createButton() {
+        return new LightButton();
+    }
+
+    @Override
+    public TextField createTextField() {
+        return new LightTextField();
+    }
+}
+
+package AbstractFactory;
+
+public class GUIGenerator {
+    public static void main(String[] args) {
+        GUIFactory factory = new DarkGUIFactory();
+        Button button = factory.createButton();
+        TextField textField = factory.createTextField();
+
+        button.render();
+        textField.render();
+    }
+}
