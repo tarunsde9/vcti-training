@@ -1,0 +1,78 @@
+package Adapter;
+
+public interface MediaPlayer {
+    public void play(String fileName);
+}
+
+package Adapter;
+
+public class MP3 implements MediaPlayer {
+    @Override
+    public void play(String fileName) {
+        System.out.println("Media Player plays the MP3: " + fileName);
+    }
+}
+package Adapter;
+
+public class MP4 {
+    public void run(String fileName) {
+        System.out.println("Media Player plays both audio and video: " + fileName);
+    }
+}
+package Adapter;
+
+public class VLC {
+    public void output(String fileName) {
+        System.out.println("Media player plays the vlc file: " + fileName);
+    }
+}
+package Adapter;
+
+public class MediaAdapter implements MediaPlayer {
+
+    private MP4 mp4;
+    private VLC vlc;
+
+    MediaAdapter(String type) {
+        if (type == null) {
+            throw new IllegalArgumentException("Media type cannot be null");
+        }
+        switch(type) {
+            case "mp4":
+                mp4 = new MP4();
+                vlc = null;
+                break;
+
+            case "vlc":
+                vlc = new VLC();
+                mp4 = null;
+                break;
+
+            default:
+                throw new IllegalArgumentException("Unsupported media type: " + type);
+        }
+    }
+
+    @Override
+    public void play(String fileName) {
+        if(vlc != null) {
+            vlc.output(fileName);
+        } else {
+            mp4.run(fileName);
+        }
+    }
+}
+package Adapter;
+
+public class Main {
+    public static void main(String[] args) {
+        MediaPlayer player = new MediaAdapter("mp4");
+        player.play("song");
+
+        player = new MP3();
+        player.play("song2");
+
+        player = new MediaAdapter("vlc");
+        player.play("song3");
+    }
+}
