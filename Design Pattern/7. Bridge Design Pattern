@@ -1,0 +1,76 @@
+package Bridge;
+
+public class MultiMedia {
+    public static void main(String[] args) {
+        MediaFile a1 = new Audio(new Windows());
+        MediaFile a2 = new Audio(new Mac());
+
+        MediaFile v1 = new Video(new Windows());
+        MediaFile v2 = new Video(new Mac());
+
+        a1.play("Song.mp3");
+        a2.play("Song.mp3");
+
+        v1.play("Movie.mp4");
+        v2.play("Movie.mp4");
+    }
+}
+
+public abstract class MediaFile {
+    protected Device device;
+
+    public MediaFile(Device d) {
+        this.device = d;
+    }
+    abstract void play(String fileName);
+}
+
+public class Audio extends MediaFile {
+    public Audio(Device d) {
+        super(d);
+    }
+
+    @Override
+    void play(String fileName) {
+        device.playAudio(fileName);
+    }
+}
+
+public class Video extends MediaFile {
+    public Video(Device d) {
+        super(d);
+    }
+
+    @Override
+    void play(String fileName) {
+        device.playVideo(fileName);
+    }
+}
+
+public interface Device {
+    public void playAudio(String fileName);
+    public void playVideo(String fileName);
+}
+
+public class Windows implements Device {
+    @Override
+    public void playAudio(String fileName) {
+        System.out.println("Playing audio on Windows: " + fileName);
+    }
+
+    @Override
+    public void playVideo(String fileName) {
+        System.out.println("Playing video on Windows: " + fileName);
+    }
+}
+
+    @Override
+    public void playAudio(String fileName) {
+        System.out.println("Playing audio on MAC: " + fileName);
+    }
+
+    @Override
+    public void playVideo(String fileName) {
+        System.out.println("Playing video on MAC: " + fileName);
+    }
+}
