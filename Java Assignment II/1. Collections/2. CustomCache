@@ -1,0 +1,25 @@
+import java.util.HashMap;
+
+public class CustomCache {
+    HashMap<Integer, String> cache = new HashMap<>();
+
+    void put(int key, String val) {
+        cache.put(key, val);
+    }
+
+    String get(int key) {
+        if(!cache.containsKey(key))
+            return "";
+        return cache.get(key);
+    }
+
+    public static void main(String[] args) {
+        CustomCache cache = new CustomCache();
+        for(int i=0; i<=2000; i++) {
+            cache.put(i, "VALUE" + i);
+        }
+        System.out.println(cache.get(1));
+        System.out.println(cache.get(1000));
+        System.out.println(cache.get(2000));
+    }
+}
