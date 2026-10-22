@@ -1,0 +1,61 @@
+public class Main {
+    public static void main(String[] args) {
+        LRU lru = new LRU(3);
+        lru.put(1, 'A');
+        lru.put(2, 'B');
+        lru.put(3, 'C');
+
+        System.out.println(lru.get(1));
+        lru.put(4, 'D');
+        System.out.println(lru.toString());
+
+        lru.put(5,'F');
+        lru.put(6, 'K');
+        System.out.println(lru.toString());
+    }
+}
+
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+
+public class LRU {
+    int capacity;
+    LinkedHashMap<Integer, Character> data;
+    LinkedList<Integer> LRU;
+
+    public LRU(int capacity) {
+        this.capacity = capacity;
+        this.data = new LinkedHashMap<>();
+        this.LRU = new LinkedList<>();
+    }
+
+    public void put(int key, char value) {
+        if(data.containsKey(key)) {
+            LRU.remove(Integer.valueOf(key));
+        } else if(LRU.size() >= capacity) {
+            int last = LRU.removeLast();
+            data.remove(last);
+        }
+        data.put(key, value);
+        LRU.addFirst(key);
+    }
+
+    public char get(int key) {
+        if(!data.containsKey(key)) {
+            return '\0';
+        }
+
+        LRU.remove(Integer.valueOf(key));
+        LRU.addFirst(key);
+        return data.get(key);
+    }
+
+    @Override
+    public String toString() {
+        return "LRU{" +
+                "capacity=" + capacity +
+                ", data=" + data +
+                ", LRU=" + LRU +
+                '}';
+    }
+}
