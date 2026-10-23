@@ -1,0 +1,32 @@
+import java.util.concurrent.ConcurrentHashMap;
+
+public class CountFrequency {
+    String paragraph;
+    ConcurrentHashMap<String, Integer> map;
+    CountFrequency(String para) {
+        this.paragraph = para;
+        this.map = new ConcurrentHashMap<>();
+    }
+
+    public static void main(String[] args) {
+        CountFrequency cf = new CountFrequency("hey hello this is a sample paragraph. welcome to my java code. this is also a sample words.");
+        cf.countFreq();
+        System.out.println(cf.toString());
+    }
+
+    public void countFreq() {
+        String[] arr = paragraph.toLowerCase().split("\\s+");
+
+        for(String str: arr) {
+            map.merge(str, 1, Integer::sum);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "CountFrequency{" +
+                "paragraph='" + paragraph + '\'' +
+                ", map=" + map +
+                '}';
+    }
+}
