@@ -1,0 +1,71 @@
+package Composite;
+
+public class File implements FileSystemComponent {
+    String fileName;
+    public File(String fName) {
+        this.fileName = fName;
+    }
+
+    @Override
+    public void showName() {
+        System.out.println("File Name: " + fileName);
+    }
+}
+
+package Composite;
+
+import java.util.*;
+
+public class Folder implements FileSystemComponent {
+    String folderName;
+    List<FileSystemComponent> components;
+    public Folder(String fName) {
+        this.folderName = fName;
+        this.components = new ArrayList<>();
+    }
+
+    @Override
+    public void showName() {
+        System.out.println("Folder Name: " + folderName);
+        for(FileSystemComponent c: components) {
+            c.showName();
+        }
+    }
+
+    public void addCom(FileSystemComponent newCom) {
+        components.add(newCom);
+    }
+}
+
+package Composite;
+
+public interface FileSystemComponent {
+    void showName();
+}
+
+package Composite;
+
+public class FileSystemViewerApplication {
+    public static void main(String[] args) {
+        File l1 = new File("file1");
+        File l2 = new File("file2");
+        File l3 = new File("file3");
+        File l4 = new File("file4");
+        File l5 = new File("file5");
+
+        Folder c1 = new Folder("folder1");
+        Folder c2 = new Folder("folder2");
+        Folder c3 = new Folder("folder3");
+
+        c1.addCom(l1);
+        c1.addCom(c2);
+        c1.addCom(c3);
+
+        c2.addCom(l2);
+        c2.addCom(l3);
+        c3.addCom(l4);
+        c3.addCom(l5);
+
+        c1.showName();
+    }
+}
