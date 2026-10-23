@@ -1,0 +1,35 @@
+import java.util.Comparator;
+import java.util.PriorityQueue;
+
+public class PQ {
+    public static void main(String[] args) {
+        PriorityQueue<Student> pq = new PriorityQueue<>(new Comparator<Student>() {
+            @Override
+            public int compare(Student o1, Student o2) {
+                return Integer.compare(o1.id, o2.id);
+            }
+        });
+
+        pq.add(new Student("Tarun", 4));
+        pq.add(new Student("Varun", 5));
+        pq.add(new Student("Arun", 1));
+        System.out.println(pq.toString());
+
+        pq.add(new Student("Karun", 2));
+        pq.add(new Student("Sharon", 3));
+        System.out.println(pq.toString());
+
+        System.out.println(pq.poll());
+        System.out.println(pq.toString());
+    }
+}
+
+class Student {
+    String name;
+    int id;
+
+    public Student(String name, int id) {
+        this.name = name;
+        this.id = id;
+    }
+}
