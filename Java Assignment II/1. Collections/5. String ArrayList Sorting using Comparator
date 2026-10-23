@@ -1,0 +1,9 @@
+import java.util.*;
+
+public class StringSort {
+    public static void main(String[] args) {
+        ArrayList<String> fruits = new ArrayList<>(Arrays.asList("Banana", "Apple", "Strawberry", "Kiwi"));
+        fruits.sort(Comparator.reverseOrder());
+        System.out.println(fruits.toString());
+    }
+}
