@@ -1,0 +1,92 @@
+package Decorator;
+
+public interface Coffee {
+    public int cost();
+    public String description();
+}
+
+package Decorator;
+
+public class StrongCoffee implements Coffee {
+    @Override
+    public int cost() {
+        return 15;
+    }
+
+    @Override
+    public String description() {
+        return "StrongCoffee Description.";
+    }
+}
+package Decorator;
+
+public abstract class CoffeeDecorator implements Coffee {
+    private Coffee coffee;
+    CoffeeDecorator(Coffee coffee) {
+        this.coffee = coffee;
+    }
+}
+package Decorator;
+
+public class FilterCoffee implements Coffee {
+    @Override
+    public int cost() {
+        return 15;
+    }
+
+    @Override
+    public String description() {
+        return "FilterCoffee Description.";
+    }
+}
+package Decorator;
+
+public class MilkDecorator extends CoffeeDecorator {
+    private Coffee coffee;
+    public MilkDecorator(Coffee coffee) {
+        super(coffee);
+        this.coffee = coffee;
+    }
+
+    @Override
+    public int cost() {
+        return 5 + coffee.cost();
+    }
+
+    @Override
+    public String description() {
+        return coffee.description() + " & this is milk decorator.";
+    }
+}
+package Decorator;
+
+public class CaramelDecorator extends CoffeeDecorator {
+    private Coffee coffee;
+    public CaramelDecorator(Coffee coffee) {
+        super(coffee);
+        this.coffee = coffee;
+    }
+
+    @Override
+    public int cost() {
+        return 10 + coffee.cost();
+    }
+
+    @Override
+    public String description() {
+        return coffee.description() + " & this is caramel decorator.";
+    }
+}
+package Decorator;
+
+public class CoffeeShopApplication {
+    public static void main(String[] args) {
+        Coffee coffee1 = new MilkDecorator(new FilterCoffee());
+        System.out.println("The cost: " + coffee1.cost());
+        System.out.println(coffee1.description());
+
+        Coffee coffee2 = new MilkDecorator(new CaramelDecorator(new StrongCoffee()));
+        System.out.println("The cost: " + coffee2.cost());
+        System.out.println(coffee2.description());
+    }
+}
