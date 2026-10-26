@@ -1,0 +1,62 @@
+package Facade;
+
+public class Lighting {
+    public void lightsOn() {
+        System.out.println("Lighting: lights on.");
+    }
+    public void lightsOff() {
+        System.out.println("Lighting: lights off.");
+    }
+}
+
+public class Heating {
+    public void increaseTemperature() {
+        System.out.println("Heating: increasing temperature.");
+    }
+
+    public void decreaseTemperature() {
+        System.out.println("Heating: decreasing temperature.");
+    }
+}
+
+public class Security {
+    public void accessCCTV() {
+        System.out.println("Security: accessing CCTV.");
+    }
+
+    public void turnOffSurveillance() {
+        System.out.println("Security: surveillance turned off.");
+    }
+}
+
+public class HomeAutomationFacade {
+    private Lighting lighting;
+    private Heating heating;
+    private Security security;
+
+    public HomeAutomationFacade() {
+        lighting = new Lighting();
+        heating = new Heating();
+        security = new Security();
+    }
+
+    public void turnOnSystem() {
+        security.accessCCTV();
+        lighting.lightsOn();
+        heating.increaseTemperature();
+    }
+
+    public void turnOffSystem() {
+        heating.decreaseTemperature();
+        lighting.lightsOff();
+        security.turnOffSurveillance();
+    }
+}
+
+public class Application {
+    public static void main(String[] args) {
+        HomeAutomationFacade app = new HomeAutomationFacade();
+        app.turnOnSystem();
+        app.turnOffSystem();
+    }
+}
