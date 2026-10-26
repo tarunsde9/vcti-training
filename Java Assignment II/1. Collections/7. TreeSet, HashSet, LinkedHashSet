@@ -1,0 +1,32 @@
+import java.util.*;
+
+public class StoreCustomObjects {
+    public static void main(String[] args) {
+        TreeSet<Student> ts = new TreeSet<>(new Comparator<Student>() {
+            @Override
+            public int compare(Student s1, Student s2) {
+                return Integer.compare(s1.id, s2.id);
+            }
+        });
+
+        HashSet<Student> hs = new HashSet<>(); //no order
+        LinkedHashSet<Student> lhs = new LinkedHashSet<>(); //inserted order
+
+        Student s1 = new Student("Tarun", 4);
+        Student s2 = new Student("Varun", 2);
+        Student s3 = new Student("Arun", 3);
+        Student s4 = new Student("Another Varun", 2);
+
+        Student[] students = {s1, s2, s3, s4};
+
+        for(Student s:students) {
+            ts.add(s);
+            hs.add(s);
+            lhs.add(s);
+        }
+
+        System.out.println("TreeSet: " + ts);
+        System.out.println("HashSet: " + hs);
+        System.out.println("LinkedHashSet: " + lhs);
+    }
+}
