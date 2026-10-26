@@ -1,0 +1,122 @@
+import java.util.*;
+
+public class SortingApplication {
+
+    static void bubbleSort(int[] a) {
+        for(int i=0; i<a.length-1; i++) {
+            for(int j=0; j<a.length-i-1; j++) {
+                if(a[j]>a[j + 1]) {
+                    int temp = a[j];
+                    a[j] = a[j+1];
+                    a[j+1] = temp;
+                }
+            }
+        }
+    }
+
+
+    static void quickSort(int[] a, int low, int high) {
+        if(low<high) {
+            int pivot = a[high];
+            int i = low-1;
+
+            for(int j=low; j<high; j++) {
+                if(a[j] <= pivot) {
+                    i++;
+                    int temp = a[i];
+                    a[i] = a[j];
+                    a[j] = temp;
+                }
+            }
+
+            int temp = a[i+1];
+            a[i+1] = a[high];
+            a[high] = temp;
+
+            int p = i+1;
+            quickSort(a, low, p - 1);
+            quickSort(a, p + 1, high);
+        }
+    }
+
+    static void mergeSort(int[] a, int left, int right) {
+        if(left<right) {
+            int mid = left+(right-left)/2;
+
+            mergeSort(a, left, mid);
+            mergeSort(a, mid + 1, right);
+            merge(a, left, mid, right);
+        }
+    }
+
+    static void merge(int[] a, int left, int mid, int right) {
+        int[] temp = new int[right-left+1];
+        int i=left, j=mid+1, k=0;
+
+        while(i<=mid && j<=right) {
+            if(a[i]<=a[j]) {
+                temp[k++] = a[i++];
+            } else {
+                temp[k++] = a[j++];
+            }
+        }
+
+        while(i <= mid) temp[k++] = a[i++];
+        while(j <= right) temp[k++] = a[j++];
+
+        for (i=0; i<temp.length; i++) {
+            a[left+i] = temp[i];
+        }
+    }
+
+    public static void main(String[] args) {
+        if (args.length < 2) {
+            System.out.println(
+                    "Usage: java SortingApplication <BUBBLE|QUICK|MERGE> <values>"
+            );
+            return;
+        }
+
+        String algorithm = args[0].toUpperCase();
+        ArrayList<Integer> numbers = new ArrayList<>();
+
+        for (int i = 1; i < args.length; i++) {
+            try {
+                numbers.add(Integer.parseInt(args[i]));
+            } catch (NumberFormatException e) {
+            }
+        }
+
+        int[] a = numbers.stream()
+                .mapToInt(Integer::intValue)
+                .toArray();
+
+        long start = System.nanoTime();
+
+        switch (algorithm) {
+            case "BUBBLE":
+                bubbleSort(a);
+                break;
+
+            case "QUICK":
+                quickSort(a, 0, a.length - 1);
+                break;
+
+            case "MERGE":
+                mergeSort(a, 0, a.length - 1);
+                break;
+
+            default:
+                System.out.println("Invalid sorting algorithm!");
+                System.out.println("Choose BUBBLE, QUICK, or MERGE.");
+                return;
+        }
+
+        long end = System.nanoTime();
+
+        System.out.println("Algorithm: " + algorithm);
+        System.out.println("Sorted values: " + Arrays.toString(a));
+        System.out.printf("Time taken: %.3f ms%n",
+                (end - start) / 1_000_000.0);
+    }
+}
