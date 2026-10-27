@@ -1,0 +1,47 @@
+package Flyweight;
+
+public interface CharacterInterface {
+    public void render();
+}
+
+public class Symbol implements CharacterInterface {
+    private char symbol;
+
+    public Symbol(char symbol) {
+        this.symbol = symbol;
+    }
+
+    @Override
+    public void render() {
+        System.out.println("Rendered Symbol: " + symbol);
+    }
+}
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class CharacterFactory {
+    private static final Map<Character, Symbol> map = new HashMap<>();
+
+    public static Symbol getCharacter(char symbol) {
+        Symbol ch = map.get(symbol);
+        if(ch == null) {
+            ch = new Symbol(symbol);
+            map.put(symbol, ch);
+        }
+        return ch;
+    }
+
+    public static void main(String[] args) {
+        Symbol s1 = CharacterFactory.getCharacter('A');
+        Symbol s2 = CharacterFactory.getCharacter('B');
+        Symbol s3 = CharacterFactory.getCharacter('A');
+
+        s1.render();
+        s2.render();
+        s3.render();
+
+        System.out.println(s1 == s3);
+        System.out.println(s1 == s2);
+    }
+}
