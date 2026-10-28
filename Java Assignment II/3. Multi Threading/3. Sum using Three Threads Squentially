@@ -1,0 +1,54 @@
+public class ThreadThree {
+    public static void main(String[] args) {
+        Thread t1 = new T1();
+        Thread t2 = new T2();
+        Thread t3 = new T3();
+
+        try {
+            t1.start();
+            t1.join();
+            t2.start();
+            t2.join();
+            t3.start();
+            t3.join();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
+
+class T1 extends Thread {
+    @Override
+    public void run() {
+        for(int i=1; i<=10; i++) {
+            if(i%2==0)
+                System.out.print(i + " ");
+        }
+        System.out.println();
+    }
+}
+
+class T2 extends Thread {
+    @Override
+    public void run() {
+        for(int i=1; i<=10; i++) {
+            if(i%2==1)
+                System.out.print(i + " ");
+        }
+        System.out.println();
+    }
+}
+
+class T3 extends Thread {
+    int o=0, e=0, t=0;
+    @Override
+    public void run() {
+        for(int i=1; i<=10; i++) {
+            if(i%2==0)  e+=i;
+            else o+=i;
+        }
+        System.out.println("Sum of Odd numbers: " + o);
+        System.out.println("Sum of Even numbers: " + e);
+        System.out.println("Total sum: " + (o+e));
+    }
+}
