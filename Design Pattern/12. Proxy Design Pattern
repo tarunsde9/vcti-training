@@ -1,0 +1,44 @@
+package Proxy;
+
+public class DownloaderApplication {
+    public static void main(String[] args) {
+        FileDownloaderProxy fp = new FileDownloaderProxy(true);
+        fp.downloadFile();
+        FileDownloaderProxy fp1 = new FileDownloaderProxy(false);
+        fp1.downloadFile();
+    }
+}
+
+public interface Downloader {
+    public void downloadFile();
+}
+
+public class FileDownloader implements Downloader {
+    public FileDownloader() {
+        System.out.println("Log: Main Object is created.");
+    }
+
+    @Override
+    public void downloadFile() {
+        System.out.println("Log: Main download file method is called.");
+    }
+}
+
+public class FileDownloaderProxy implements Downloader {
+    private boolean authorized;
+    public FileDownloaderProxy(boolean authorized) {
+        this.authorized = authorized;
+        System.out.println("Log: Proxy object of file downloader is created.");
+    }
+
+    @Override
+    public void downloadFile() {
+        if (authorized) {
+            System.out.println("Log: Access granted. Starting download.");
+            FileDownloader fd = new FileDownloader();
+            fd.downloadFile();
+        } else {
+            System.out.println("Log: Access denied. Download not allowed.");
+        }
+    }
+}
