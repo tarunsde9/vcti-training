@@ -1,0 +1,68 @@
+package org.example.coursecrud;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.*;
+
+@RestController
+@RequestMapping("/courses")
+public class Course {
+
+    private static Map<Integer, String> courses = new HashMap<>();
+
+    static {
+        courses.put(1, "Maths");
+        courses.put(2, "CS");
+    }
+
+    @GetMapping("/health")
+    public String health() {
+        return "App is running";
+    }
+
+    @GetMapping
+    public Map<Integer, String> getCourses(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size) {
+        if (page < 0 || size <= 0) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Invalid page or size");
+        }
+        List<Map.Entry<Integer, String>> list =
+                new ArrayList<>(courses.entrySet());
+
+        int start = page*size;
+        int end = Math.min(courses.size(), start+size);
+
+        Map<Integer, String> result = new LinkedHashMap<>();
+        for(int i=start; i<end && i<list.size(); i++) {
+            result.put(list.get(i).getKey(), list.get(i).getValue());
+        }
+        return result;
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Map<Integer, String>> getCourses(@PathVariable(required = false) Integer id) {
+        if(id == null || id == 0)
+            return ResponseEntity.notFound().build();
+
+        return ResponseEntity.ok(Map.of(id, courses.get(id)));
+    }
+
+    @PostMapping
+    public ResponseEntity<String> addCourse(@RequestBody Map<String, Object> request) {
+        String name = (String) request.get("name");
+        courses.put(courses.size()+1, name);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Course added successfully.");
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteCourse(@PathVariable Integer id) {
+        if(!courses.containsKey(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        courses.remove(id);
+        return ResponseEntity.noContent().build();
+    }
+}
