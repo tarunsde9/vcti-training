@@ -1,0 +1,66 @@
+import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.LinkedBlockingDeque;
+
+class MyThreadPool {
+    private BlockingDeque<Runnable> bq = new LinkedBlockingDeque<>();
+
+    public MyThreadPool(int threads) {
+        for(int i=0; i<threads; i++) {
+            Thread worker = new Thread(() -> {
+                while(true) {
+                    try {
+                        Runnable task = bq.take();
+                        task.run();
+                    } catch (InterruptedException e) {
+                        break;
+                    }
+                }
+            });
+            worker.start();
+        }
+    }
+
+    public void submit(Runnable task) {
+        bq.add(task);
+    }
+}
+
+class Task1 implements Runnable {
+    @Override
+    public void run() {
+        for(int i=1; i<=5; i++) {
+            System.out.println(i + " ");
+        }
+    }
+}
+
+class Task2 implements Runnable {
+    @Override
+    public void run() {
+        for(int i=6; i<=10; i++) {
+            System.out.println(i + " ");
+        }
+    }
+}
+
+class Task3 implements Runnable {
+    @Override
+    public void run() {
+        for(int i=11; i<=15; i++) {
+            System.out.println(i + " ");
+        }
+    }
+}
+
+class TP {
+    public static void main(String[] args) {
+        Task1 t1 = new Task1();
+        Task2 t2 = new Task2();
+        Task3 t3 = new Task3();
+
+        MyThreadPool tp = new MyThreadPool(2);
+        tp.submit(t1);
+        tp.submit(t2);
+        tp.submit(t3);
+    }
+}
