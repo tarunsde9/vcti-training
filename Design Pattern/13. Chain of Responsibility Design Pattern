@@ -1,0 +1,81 @@
+package ChainOfResponsibility;
+
+public class WebApplication {
+    public static void main(String[] args) {
+        AuthenticationMiddleware authenticate = new AuthenticationMiddleware();
+        AuthorizationMiddleware authorize = new AuthorizationMiddleware();
+        LoggingMiddleware log = new LoggingMiddleware();
+        ValidationMiddleware validate = new ValidationMiddleware();
+
+        authenticate.linkWith(authorize);
+        authorize.linkWith(log);
+        log.linkWith(validate);
+
+        authenticate.function("citizen", "indian", 21);
+        System.out.println();
+
+        authenticate.function("animal", "indian", 5);
+        System.out.println();
+
+        authenticate.function("citizen", "american", 33);
+        System.out.println();
+
+        authenticate.function("citizen", "indian", 15);
+
+    }
+}
+public abstract class Middleware {
+    Middleware next;
+
+    abstract void function(String designation, String nationality, int age);
+    void linkWith(Middleware next) {
+        this.next = next;
+    }
+}
+public class AuthenticationMiddleware extends Middleware {
+    @Override
+    void function(String designation, String nationality, int age) {
+        if(!designation.equalsIgnoreCase("citizen")) {
+            System.out.println("Authentication Failed: You are not a citizen.");
+        } else {
+            System.out.println("Authentication Passed: Moving to next middleware.");
+            if(next != null)
+                next.function(designation, nationality, age);
+        }
+    }
+}
+public class AuthorizationMiddleware extends Middleware {
+    @Override
+    void function(String designation, String nationality, int age) {
+        if(!nationality.equalsIgnoreCase("indian")) {
+            System.out.println("Authorization Failed: You are not an Indian.");
+        } else {
+            System.out.println("Authorization Passed: Moving to next middleware.");
+            if(next != null)
+                next.function(designation, nationality, age);
+        }
+    }
+}
+public class LoggingMiddleware extends Middleware {
+    @Override
+    void function(String designation, String nationality, int age) {
+        System.out.println("This is logging middleware.");
+        System.out.println("Designation: " + designation);
+        System.out.println("Nationality: " + nationality);
+        System.out.println("Age: " + age);
+        if(next != null)
+            next.function(designation, nationality, age);
+    }
+}
+public class ValidationMiddleware extends Middleware {
+    @Override
+    void function(String designation, String nationality, int age) {
+        if(age < 18) {
+            System.out.println("Validation Failed: You are a minor.");
+        } else {
+            System.out.println("Validation Passed: Moving to next middleware.");
+            if(next != null)
+                next.function(designation, nationality, age);
+        }
+    }
+}
