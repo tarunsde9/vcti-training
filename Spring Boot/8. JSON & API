@@ -1,0 +1,135 @@
+package org.example.studentjson;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class StudentJsonApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(StudentJsonApplication.class, args);
+    }
+
+}
+package org.example.studentjson;
+
+public enum StudentStatus {
+    ACTIVE,
+    INACTIVE,
+    GRADUATED
+}
+package org.example.studentjson;
+
+import java.time.LocalDate;
+
+public class Student {
+    private int id;
+    private String name;
+    private String email;
+    private String password;
+    private LocalDate dateOfBirth;
+    private StudentStatus status;
+
+    public Student(int id, String name, String email, String password,
+                   LocalDate dateOfBirth, StudentStatus status) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.dateOfBirth = dateOfBirth;
+        this.status = status;
+    }
+
+    public int getId() { return id; }
+    public String getName() { return name; }
+    public String getEmail() { return email; }
+    public String getPassword() { return password; }
+    public LocalDate getDateOfBirth() { return dateOfBirth; }
+    public StudentStatus getStatus() { return status; }
+}
+package org.example.studentjson;
+
+import java.time.LocalDate;
+
+public record StudentRequestDTO(
+        String name,
+        String email,
+        LocalDate dateOfBirth,
+        StudentStatus status
+) {}
+package org.example.studentjson;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import java.time.LocalDate;
+
+public record StudentResponseDTO(
+        int id,
+        String name,
+        String email,
+
+        @JsonFormat(pattern = "dd-MM-yyyy")
+        LocalDate dateOfBirth,
+
+        @JsonProperty("student_status")
+        StudentStatus status
+) {}
+package org.example.studentjson;
+
+import org.springframework.web.bind.annotation.*;
+import java.time.LocalDate;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+
+@RestController
+@RequestMapping("/students")
+public class StudentController {
+
+    private final Map<Integer, Student> students = new ConcurrentHashMap<>();
+    private final AtomicInteger idGenerator = new AtomicInteger(1);
+
+    @PostMapping
+    public StudentResponseDTO createStudent(
+            @RequestBody StudentRequestDTO request) {
+
+        int id = idGenerator.getAndIncrement();
+
+        Student student = new Student(
+                id,
+                request.name(),
+                request.email(),
+                "internal-secret",
+                request.dateOfBirth(),
+                request.status()
+        );
+
+        students.put(id, student);
+
+        return toResponseDTO(student);
+    }
+
+    @GetMapping("/{id}")
+    public StudentResponseDTO getStudent(@PathVariable int id) {
+        Student student = students.get(id);
+
+        if (student == null) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.NOT_FOUND,
+                    "Student not found"
+            );
+        }
+
+        return toResponseDTO(student);
+    }
+
+    private StudentResponseDTO toResponseDTO(Student student) {
+        return new StudentResponseDTO(
+                student.getId(),
+                student.getName(),
+                student.getEmail(),
+                student.getDateOfBirth(),
+                student.getStatus()
+        );
+    }
+}
