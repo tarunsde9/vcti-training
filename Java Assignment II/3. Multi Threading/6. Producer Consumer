@@ -1,0 +1,128 @@
+package E6;
+
+public class InterThread {
+    public static void main(String[] args) {
+        A a = new A();
+        new Producer(a);
+        new Consumer(a);
+    }
+}
+
+class Producer implements Runnable {
+    A a;
+
+    public Producer(A a) {
+        this.a = a;
+        Thread t = new Thread(this, "producer");
+        t.start();
+    }
+
+    public void run() {
+        int i=0;
+        while(true) {
+            a.set(i++);
+            try { Thread.sleep(500); } catch (Exception e) {};
+        }
+    }
+}
+
+class Consumer implements Runnable {
+    A a;
+
+    public Consumer(A a) {
+        this.a = a;
+        Thread t = new Thread(this, "consumer");
+        t.start();
+    }
+
+    public void run() {
+        while(true) {
+            a.get();
+            try { Thread.sleep(2000); } catch (Exception e) {};
+        }
+    }
+}
+
+class A {
+    private int num;
+    private boolean valueSet = false;
+
+    public synchronized void set(int num) {
+        while(valueSet) {
+            try { wait(); } catch (Exception e) {};
+        }
+        System.out.println("Set: " + num);
+        this.num = num;
+        valueSet = true;
+        notify();
+    }
+
+    public synchronized void get() {
+        while(!valueSet) {
+            try { wait(); } catch (Exception e) {};
+        }
+        System.out.println("Get: " + num);
+        valueSet = false;
+        notify();
+    }
+}
+
+package E6;
+
+import java.util.concurrent.LinkedBlockingQueue;
+
+public class InterThreadQueue {
+    public static void main(String[] args) {
+        LinkedBlockingQueue<Integer> queue = new LinkedBlockingQueue<>();
+
+        new ProducerQueue(queue);
+        new ConsumerQueue(queue);
+    }
+}
+
+class ProducerQueue implements Runnable {
+    LinkedBlockingQueue<Integer> queue;
+    public ProducerQueue(LinkedBlockingQueue<Integer> queue) {
+        this.queue = queue;
+        Thread t = new Thread(this, "producer");
+        t.start();
+    }
+
+    public void run() {
+        int i=0;
+        while (true) {
+            try {
+                queue.put(i);
+                System.out.println("Set: " + i);
+                i++;
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                break;
+            }
+        }
+    }
+}
+
+class ConsumerQueue implements Runnable {
+    LinkedBlockingQueue<Integer> queue;
+
+    public ConsumerQueue(LinkedBlockingQueue<Integer> queue) {
+        this.queue = queue;
+        Thread t = new Thread(this, "consumer");
+        t.start();
+    }
+
+    public void run() {
+        while (true) {
+            try {
+                int value = queue.take();
+                System.out.println("Get: " + value);
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                break;
+            }
+        }
+    }
+}
