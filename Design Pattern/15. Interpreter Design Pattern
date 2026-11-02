@@ -1,0 +1,239 @@
+package Interpreter;
+
+public interface AbstractExpression {
+    int interpret();
+}
+
+package Interpreter;
+
+public class AddExpression implements AbstractExpression {
+    private AbstractExpression left;
+    private AbstractExpression right;
+
+    public AddExpression(AbstractExpression left, AbstractExpression right) {
+        this.left = left;
+        this.right = right;
+    }
+
+    @Override
+    public int interpret() {
+        return left.interpret() + right.interpret();
+    }
+}
+
+package Interpreter;
+
+public class Context {
+    private String input;
+    private int position;
+
+    public Context(String input) {
+        this.input = input;
+        this.position = 0;
+    }
+
+    public AbstractExpression parse() {
+        AbstractExpression expression = parseExpression();
+        skipWhitespace();
+
+        if (position != input.length()) {
+            throw new IllegalArgumentException(
+                    "Unexpected character: " + input.charAt(position)
+            );
+        }
+
+        return expression;
+    }
+
+    // Handles addition and subtraction
+    private AbstractExpression parseExpression() {
+        AbstractExpression left = parseTerm();
+
+        while (true) {
+            skipWhitespace();
+
+            if (match('+')) {
+                AbstractExpression right = parseTerm();
+                left = new AddExpression(left, right);
+            } else if (match('-')) {
+                AbstractExpression right = parseTerm();
+                left = new SubtractExpression(left, right);
+            } else {
+                break;
+            }
+        }
+
+        return left;
+    }
+
+    // Handles multiplication and division
+    private AbstractExpression parseTerm() {
+        AbstractExpression left = parseFactor();
+
+        while (true) {
+            skipWhitespace();
+
+            if (match('*')) {
+                AbstractExpression right = parseFactor();
+                left = new MultiplyExpression(left, right);
+            } else if (match('/')) {
+                AbstractExpression right = parseFactor();
+                left = new DivideExpression(left, right);
+            } else {
+                break;
+            }
+        }
+
+        return left;
+    }
+
+    // Handles numbers and parentheses
+    private AbstractExpression parseFactor() {
+        skipWhitespace();
+
+        if (match('(')) {
+            AbstractExpression expression = parseExpression();
+
+            skipWhitespace();
+
+            if (!match(')')) {
+                throw new IllegalArgumentException(
+                        "Missing closing parenthesis."
+                );
+            }
+
+            return expression;
+        }
+
+        int start = position;
+
+        while (position < input.length()
+                && Character.isDigit(input.charAt(position))) {
+            position++;
+        }
+
+        if (start == position) {
+            throw new IllegalArgumentException(
+                    "Expected an integer at position " + position
+            );
+        }
+
+        int number = Integer.parseInt(input.substring(start, position));
+
+        return new NumberExpression(number);
+    }
+
+    private boolean match(char expected) {
+        if (position < input.length()
+                && input.charAt(position) == expected) {
+            position++;
+            return true;
+        }
+
+        return false;
+    }
+
+    private void skipWhitespace() {
+        while (position < input.length()
+                && Character.isWhitespace(input.charAt(position))) {
+            position++;
+        }
+    }
+}
+
+package Interpreter;
+
+public class DivideExpression implements AbstractExpression {
+    private AbstractExpression left;
+    private AbstractExpression right;
+
+    public DivideExpression(AbstractExpression left, AbstractExpression right) {
+        this.left = left;
+        this.right = right;
+    }
+
+    @Override
+    public int interpret() {
+        int divisor = right.interpret();
+
+        if (divisor == 0) {
+            throw new ArithmeticException("Cannot divide by zero.");
+        }
+
+        return left.interpret() / divisor;
+    }
+}
+
+package Interpreter;
+
+public class Main {
+    public static void main(String[] args) {
+
+        String[] expressions = {
+                "10 + 5",
+                "10 + 5 * 2",
+                "(10 + 5) * 2",
+                "20 / 5 - 2",
+                "10 - 3 * 2 + 4"
+        };
+
+        for (String input : expressions) {
+            Context context = new Context(input);
+
+            AbstractExpression expression = context.parse();
+
+            System.out.println(
+                    input + " = " + expression.interpret()
+            );
+        }
+    }
+}
+
+package Interpreter;
+
+public class MultiplyExpression implements AbstractExpression {
+    private AbstractExpression left;
+    private AbstractExpression right;
+
+    public MultiplyExpression(AbstractExpression left, AbstractExpression right) {
+        this.left = left;
+        this.right = right;
+    }
+
+    @Override
+    public int interpret() {
+        return left.interpret() * right.interpret();
+    }
+}
+
+package Interpreter;
+
+public class NumberExpression implements AbstractExpression {
+    private int num;
+
+    public NumberExpression(int num) {
+        this.num = num;
+    }
+
+    @Override
+    public int interpret() {
+        return num;
+    }
+}
+
+package Interpreter;
+
+public class SubtractExpression implements AbstractExpression {
+    private AbstractExpression left;
+    private AbstractExpression right;
+
+    public SubtractExpression(AbstractExpression left, AbstractExpression right) {
+        this.left = left;
+        this.right = right;
+    }
+
+    @Override
+    public int interpret() {
+        return left.interpret() - right.interpret();
+    }
+}
