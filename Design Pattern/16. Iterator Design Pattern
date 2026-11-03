@@ -1,0 +1,87 @@
+package Iterator;
+
+public class Main {
+    public static void main(String[] args) {
+        Book b1 = new Book("T1", "A1");
+        Book b2 = new Book("T2", "A2");
+        Book b3 = new Book("T3", "A3");
+
+        BookCollection books = new BookCollection();
+        books.addBook(b1);
+        books.addBook(b2);
+        books.addBook(b3);
+
+        BookIterator iterator = books.creatreIterator();
+        while(iterator.hasNext()) {
+            System.out.println(iterator.next());
+        }
+    }
+}
+
+package Iterator;
+
+public class Book {
+    private String title;
+    private String author;
+
+    public Book(String title, String author) {
+        this.title = title;
+        this.author = author;
+    }
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "title='" + title + '\'' +
+                ", author='" + author + '\'' +
+                '}';
+    }
+}
+package Iterator;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class BookCollection {
+    private List<Book> books;
+
+    public BookCollection() {
+        this.books = new ArrayList<>();
+    }
+
+    void addBook(Book book) {
+        books.add(book);
+    }
+
+    int size() { return books.size(); }
+
+    Book getBookAt(int index) { return books.get(index); }
+
+    public BookIterator creatreIterator() { return new BookIterator(this); }
+}
+package Iterator;
+
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
+public class BookIterator implements Iterator<Book> {
+    private BookCollection books;
+    private int index = 0;
+
+    public BookIterator(BookCollection books) {
+        this.books = books;
+    }
+
+    @Override
+    public boolean hasNext() {
+        return (books.size() > index);
+    }
+
+    @Override
+    public Book next() {
+        if(!hasNext()) {
+            throw new NoSuchElementException();
+        }
+        return books.getBookAt(index++);
+    }
+}
