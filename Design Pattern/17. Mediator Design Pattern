@@ -1,0 +1,71 @@
+package Mediator;
+
+public class Main {
+    static void main(String[] args) {
+        ChatRoom chatRoom = new ChatRoom();
+
+        User user1 = new ChatUser(chatRoom, "Alice");
+        User user2 = new ChatUser(chatRoom, "Bob");
+        User user3 = new ChatUser(chatRoom, "Charlie");
+
+        chatRoom.addUser(user1);
+        chatRoom.addUser(user2);
+        chatRoom.addUser(user3);
+
+        user1.sendMessage("Hello everyone!");
+        user2.sendMessage("Hi Alice!");
+    }
+}
+package Mediator;
+
+public interface Mediator {
+    void broadcastMessage(String message, User sender);
+}
+package Mediator;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class ChatRoom implements Mediator {
+    private List<User> users = new ArrayList<>();
+
+    public void addUser(User user) {
+        users.add(user);
+    }
+
+    @Override
+    public void broadcastMessage(String message, User sender) {
+        for(User user: users) {
+            if(user != sender)
+                user.receiveMessage(message);
+        }
+    }
+}
+package Mediator;
+
+public interface User {
+    void sendMessage(String msg);
+    void receiveMessage(String msg);
+}
+package Mediator;
+
+public class ChatUser implements User {
+    private ChatRoom chatRoom;
+    private String name;
+
+    public ChatUser(ChatRoom chatRoom, String name) {
+        this.chatRoom = chatRoom;
+        this.name = name;
+    }
+
+    @Override
+    public void sendMessage(String msg) {
+        System.out.println(name + " sends: " + msg);
+        chatRoom.broadcastMessage(msg, this);
+    }
+
+    @Override
+    public void receiveMessage(String msg) {
+        System.out.println(name + " receives: " + msg);
+    }
+}
