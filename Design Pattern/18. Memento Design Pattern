@@ -1,0 +1,133 @@
+package Memento;
+
+public enum Shape {
+    CIRCLE,
+    SQUARE,
+    TRIANGLE
+}
+package Memento;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Canvas {
+
+    private List<Shape> shapes = new ArrayList<>();
+
+    public void addShape(Shape shape) {
+        shapes.add(shape);
+        System.out.println("Added: " + shape);
+    }
+
+    public CanvasState saveState() {
+        return new CanvasState(shapes);
+    }
+
+    public void restoreState(CanvasState state) {
+        shapes = new ArrayList<>(state.getShapes());
+    }
+
+    public void display() {
+        System.out.println("Canvas: " + shapes);
+    }
+}
+package Memento;
+
+import java.util.List;
+
+public class CanvasState {
+    private final List<Shape> shapes;
+
+
+    public CanvasState(List<Shape> shapes) {
+        this.shapes = List.copyOf(shapes);
+    }
+
+    public List<Shape> getShapes() {
+        return shapes;
+    }
+}
+package Memento;
+
+public class Main {
+    static void main(String[] args) {
+        Canvas canvas = new Canvas();
+        HistoryManager history = new HistoryManager();
+
+        // Add Circle
+        history.save(canvas);
+        canvas.addShape(Shape.CIRCLE);
+        canvas.display();
+
+        // Add Square
+        history.save(canvas);
+        canvas.addShape(Shape.SQUARE);
+        canvas.display();
+
+        // Undo
+        history.undo(canvas);
+        canvas.display();
+
+        // Redo
+        history.redo(canvas);
+        canvas.display();
+
+        // Add Triangle
+        history.save(canvas);
+        canvas.addShape(Shape.TRIANGLE);
+        canvas.display();
+
+        // Undo
+        history.undo(canvas);
+        canvas.display();
+
+        // Redo
+        history.redo(canvas);
+        canvas.display();
+    }
+}
+package Memento;
+
+import java.util.Stack;
+
+public class HistoryManager {
+    private Stack<CanvasState> undoStack = new Stack<>();
+    private Stack<CanvasState> redoStack = new Stack<>();
+
+    public void save(Canvas canvas) {
+        undoStack.push(canvas.saveState());
+        redoStack.clear();
+    }
+
+    public void undo(Canvas canvas) {
+
+        if (undoStack.isEmpty()) {
+            System.out.println("Nothing to undo!");
+            return;
+        }
+
+        redoStack.push(canvas.saveState());
+
+        CanvasState previousState = undoStack.pop();
+
+        canvas.restoreState(previousState);
+
+        System.out.println("Undo performed.");
+    }
+
+    public void redo(Canvas canvas) {
+
+        if (redoStack.isEmpty()) {
+            System.out.println("Nothing to redo!");
+            return;
+        }
+
+        undoStack.push(canvas.saveState());
+
+        CanvasState nextState = redoStack.pop();
+
+        canvas.restoreState(nextState);
+
+        System.out.println("Redo performed.");
+    }
+}
