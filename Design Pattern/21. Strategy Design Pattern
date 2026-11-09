@@ -1,0 +1,55 @@
+package Strategy;
+
+public interface PaymentStrategy {
+    void process(int amount);
+}
+package Strategy;
+
+public class Processor {
+    private  PaymentStrategy strategy;
+
+    void setStrategy(PaymentStrategy strategy) {
+        this.strategy = strategy;
+    }
+
+    void processPayment(int amount) {
+        strategy.process(amount);
+    }
+}
+package Strategy;
+
+public class Main {
+    public static void main(String[] args) {
+        Processor processor = new Processor();
+
+        processor.setStrategy(new CreditCardPayment());
+        processor.processPayment(500);
+
+        processor.setStrategy(new PayPalPayment());
+        processor.processPayment(1000);
+    }
+}
+package Strategy;
+
+public class PayPalPayment implements PaymentStrategy {
+    @Override
+    public void process(int amount) {
+        System.out.println("The payment of amount " + amount + "rs is processed by PayPal." );
+    }
+}
+package Strategy;
+
+public class CreditCardPayment implements PaymentStrategy {
+    @Override
+    public void process(int amount) {
+        System.out.println("The payment of amount " + amount + "rs is processed by Credit Card." );
+    }
+}
+package Strategy;
+
+public class BitcoinPayment implements PaymentStrategy {
+    @Override
+    public void process(int amount) {
+        System.out.println("The payment of amount " + amount + "rs is processed by Bitcoin." );
+    }
+}
