@@ -1,0 +1,112 @@
+package State;
+
+public interface TrafficState {
+    void redSignal(TrafficSignal ts);
+    void yellowSignal(TrafficSignal ts);
+    void greenSignal(TrafficSignal ts);
+}
+package State;
+
+public class RedState implements TrafficState {
+    @Override
+    public void redSignal(TrafficSignal ts) {
+        System.out.println("Red Signal Behaviour.");
+        ts.setState(new YellowState());
+    }
+
+    @Override
+    public void yellowSignal(TrafficSignal ts) {
+        System.out.println("This is not red state.");
+    }
+
+    @Override
+    public void greenSignal(TrafficSignal ts) {
+        System.out.println("This is not red state.");
+    }
+}
+package State;
+
+public class GreenState implements TrafficState {
+    @Override
+    public void redSignal(TrafficSignal ts) {
+        System.out.println("This is not green state.");
+    }
+
+    @Override
+    public void yellowSignal(TrafficSignal ts) {
+        System.out.println("This is not green state.");
+    }
+
+    @Override
+    public void greenSignal(TrafficSignal ts) {
+        System.out.println("Green state behaviour.");
+        ts.setState(new RedState());
+    }
+}
+package State;
+
+public class YellowState implements TrafficState {
+    @Override
+    public void redSignal(TrafficSignal ts) {
+        System.out.println("This is not yellow state.");
+    }
+
+    @Override
+    public void yellowSignal(TrafficSignal ts) {
+        System.out.println("Yellow state behaviour.");
+        ts.setState(new GreenState());
+    }
+
+    @Override
+    public void greenSignal(TrafficSignal ts) {
+        System.out.println("This is not yellow state.");
+    }
+}
+package State;
+
+public class TrafficSignal {
+    TrafficState state;
+
+    void TrafficSignal() {
+        this.state = new GreenState();
+    }
+
+    void setState(TrafficState state) {
+        this.state = state;
+    }
+
+    void redState() {
+        state.redSignal(this);
+    }
+
+    void yellowState() {
+        state.yellowSignal(this);
+    }
+
+    void greenState() {
+        state.greenSignal(this);
+    }
+}
+package State;
+
+public class Main {
+    public static void main(String[] args) {
+
+        TrafficSignal trafficSignal = new TrafficSignal();
+
+        // Initial state: Green
+        trafficSignal.greenState();
+
+        // Current state: Red
+        trafficSignal.redState();
+
+        // Current state: Yellow
+        trafficSignal.yellowState();
+
+        // Current state: Green
+        trafficSignal.greenState();
+
+        // Try calling an incorrect state method
+        trafficSignal.yellowState();
+    }
+}
