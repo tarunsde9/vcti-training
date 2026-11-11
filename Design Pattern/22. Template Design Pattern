@@ -1,0 +1,65 @@
+package Template;
+
+public abstract class DataProcessor {
+    public String fn;
+    public abstract void read();
+    public abstract void parse();
+    public abstract void save();
+
+    public final void process(String fileName) {
+        this.fn = fileName;
+        read();
+        parse();
+        save();
+    }
+}
+
+package Template;
+
+public class CSV extends DataProcessor {
+    @Override
+    public void read() {
+        System.out.println("Read file by CSV: " + this.fn);
+    }
+
+    @Override
+    public void parse() {
+        System.out.println("Parse file by CSV: " + this.fn);
+    }
+
+    @Override
+    public void save() {
+        System.out.println("Save file by CSV: " + this.fn);
+    }
+}
+
+package Template;
+
+public class JSON extends DataProcessor {
+    @Override
+    public void read() {
+        System.out.println("Read file by JSON: " + this.fn);
+    }
+
+    @Override
+    public void parse() {
+        System.out.println("Parse file by JSON: " + this.fn);
+    }
+
+    @Override
+    public void save() {
+        System.out.println("Save file by JSON: " + this.fn);
+    }
+}
+
+package Template;
+
+public class Main {
+    public static void main(String[] args) {
+        DataProcessor csv = new CSV();
+        csv.process("file1");
+
+        DataProcessor json = new JSON();
+        json.process("file3");
+    }
+}
