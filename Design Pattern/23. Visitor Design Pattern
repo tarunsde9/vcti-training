@@ -1,0 +1,187 @@
+package Visitor;
+
+public interface Element {
+    void accept(Visitor visitor);
+}
+
+package Visitor;
+
+public class File implements Element {
+    private String name;
+    private int size;
+
+    public File(String name, int size) {
+        this.name = name;
+        this.size = size;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    @Override
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
+    }
+}
+
+package Visitor;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Directory implements Element {
+    private String name;
+    private List<Element> elements;
+
+    public Directory(String name) {
+        this.name = name;
+        this.elements = new ArrayList<>();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public List<Element> getElements() {
+        return elements;
+    }
+
+    public void addElement(Element element) {
+        elements.add(element);
+    }
+    @Override
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
+    }
+}
+package Visitor;
+
+public interface Visitor {
+    void visit(File file);
+    void visit(Directory directory);
+}
+package Visitor;
+
+public class PrintStructure implements Visitor {
+
+    private int level = 0;
+
+    @Override
+    public void visit(File file) {
+        System.out.println("  ".repeat(level) +
+                "File: " + file.getName());
+    }
+
+    @Override
+    public void visit(Directory directory) {
+        System.out.println("  ".repeat(level) +
+                "Directory: " + directory.getName());
+
+        level++;
+
+        for (Element element : directory.getElements()) {
+            element.accept(this);
+        }
+
+        level--;
+    }
+}
+package Visitor;
+
+public class TotalSize implements Visitor {
+
+    private int totalSize = 0;
+
+    @Override
+    public void visit(File file) {
+        totalSize += file.getSize();
+    }
+
+    @Override
+    public void visit(Directory directory) {
+        for (Element element : directory.getElements()) {
+            element.accept(this);
+        }
+    }
+
+    public int getTotalSize() {
+        return totalSize;
+    }
+}
+package Visitor;
+
+public class FindFile implements Visitor {
+
+    private String targetName;
+    private boolean found = false;
+
+    public FindFile(String targetName) {
+        this.targetName = targetName;
+    }
+
+    @Override
+    public void visit(File file) {
+        if (file.getName().equalsIgnoreCase(targetName)) {
+            System.out.println("File found: " + file.getName());
+            found = true;
+        }
+    }
+
+    @Override
+    public void visit(Directory directory) {
+        for (Element element : directory.getElements()) {
+            element.accept(this);
+        }
+    }
+
+    public boolean isFound() {
+        return found;
+    }
+}
+package Visitor;
+
+public class Main {
+    public static void main(String[] args) {
+
+        // Create files
+        File file1 = new File("file1.txt", 10);
+        File file2 = new File("file2.txt", 20);
+        File file3 = new File("file3.txt", 30);
+
+        // Create directories
+        Directory root = new Directory("Root");
+        Directory documents = new Directory("Documents");
+
+        // Add files to directories
+        root.addElement(file1);
+
+        documents.addElement(file2);
+        documents.addElement(file3);
+
+        root.addElement(documents);
+
+        // 1. Print directory structure
+        System.out.println("---- Directory Structure ----");
+        root.accept(new PrintStructure());
+
+        // 2. Calculate total size
+        System.out.println("\n---- Total Size ----");
+        TotalSize totalSize = new TotalSize();
+        root.accept(totalSize);
+        System.out.println("Total Size: " + totalSize.getTotalSize() + " KB");
+
+        // 3. Find a file
+        System.out.println("\n---- Find File ----");
+        FindFile findFile = new FindFile("file3.txt");
+        root.accept(findFile);
+
+        if (!findFile.isFound()) {
+            System.out.println("File not found.");
+        }
+    }
+}
