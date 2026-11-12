@@ -1,0 +1,28 @@
+package E7;
+
+public class MyTask implements Runnable {
+
+    // static threadLocal - not dependent on object or instance. all the values set by the object (myTask's)
+    // instances are stored in same threadLocal, but the values are different even though it is static variable
+    // it is because - threadLocal.
+    private static ThreadLocal<Integer> threadLocal = ThreadLocal.withInitial(() -> 0);
+
+    @Override
+    public void run() {
+        int value = (int) (Math.random()*100);
+        threadLocal.set(value);
+        System.out.println(Thread.currentThread().getName() + " - value: " + threadLocal.get());
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Thread t1 = new Thread(new MyTask(), "Thread - 1");
+        Thread t2 = new Thread(new MyTask(), "Thread - 2");
+        Thread t3 = new Thread(new MyTask(), "Thread - 3");
+
+        t1.start();
+        t2.start();
+        t3.start();
+    }
+}
