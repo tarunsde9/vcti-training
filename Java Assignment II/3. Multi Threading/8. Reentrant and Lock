@@ -1,0 +1,113 @@
+package E8;
+
+import java.util.*;
+import java.util.concurrent.locks.*;
+
+public class Buffer {
+    private Queue<Integer> queue = new LinkedList<>();
+    private int capacity = 3;
+
+    private ReentrantLock lock = new ReentrantLock();
+
+    private Condition notFull = lock.newCondition();
+    private Condition notEmpty = lock.newCondition();
+
+    public void produce(int value) {
+        lock.lock();
+        try {
+            while(queue.size() == capacity) {
+                notFull.await();
+            }
+            queue.add(value);
+            System.out.println(
+                    Thread.currentThread().getName() +
+                            " produced : " + value
+            );
+            notEmpty.signal();
+        } catch(InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public int consume() {
+        lock.lock();
+        try {
+            while(queue.isEmpty()) {
+                notEmpty.await();
+            }
+            int value = queue.poll();
+            System.out.println(
+                    Thread.currentThread().getName() +
+                            " consumed: " + value
+            );
+            notFull.signal();
+            return value;
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return -1;
+        } finally {
+            lock.unlock();
+        }
+    }
+}
+
+class Producer implements Runnable {
+    private Buffer buffer;
+    private int start;
+
+    public Producer(Buffer buffer, int start) {
+        this.buffer = buffer;
+        this.start = start;
+    }
+
+    @Override
+    public void run() {
+        for(int i=start; i<start+5; i++) {
+            buffer.produce(i);
+        }
+    }
+}
+
+class Consumer implements Runnable {
+    private Buffer buffer;
+
+    public Consumer(Buffer buffer) {
+        this.buffer = buffer;
+    }
+
+    public void run() {
+        for(int i=0; i<5; i++) {
+            buffer.consume();
+        }
+    }
+}
+
+class Main {
+    public static void main(String[] args) {
+
+        Buffer buffer = new Buffer();
+
+        Thread p1 = new Thread(new Producer(buffer, 1), "Producer-1");
+        Thread p2 = new Thread(new Producer(buffer, 6), "Producer-2");
+
+        Thread c1 = new Thread(new Consumer(buffer), "Consumer-1");
+        Thread c2 = new Thread(new Consumer(buffer), "Consumer-2");
+
+        p1.start();
+        p2.start();
+
+        c1.start();
+        c2.start();
+
+        try {
+            p1.join();
+            p2.join();
+            c1.join();
+            c2.join();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+}
