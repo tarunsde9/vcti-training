@@ -1,0 +1,66 @@
+package Q1.objectsync;
+
+public class ObjectSync {
+    public static void main(String args[]) {
+        Incrementer obj = new Incrementer();
+
+        Thread t1 = new Thread(new Task(obj), "Thread-1");
+        Thread t2 = new Thread(new Task(obj), "Thread-2");
+        t1.start();
+        t2.start();
+    }
+}
+
+class Incrementer {
+    int i = 0;
+
+    public void increment() {
+        synchronized(this) {
+            i++;
+            System.out.println(Thread.currentThread().getName() + " : " + i);
+        }
+    }
+}
+
+class Task implements Runnable {
+    Incrementer obj;
+
+    Task(Incrementer obj) {
+        this.obj = obj;
+    }
+
+    @Override
+    public void run() {
+        for (int i=0; i<5; i++) {
+            obj.increment();
+        }
+    }
+}
+
+package Q1.methodsync;
+
+public class MethodSync {
+    static int i=0;
+
+    public static void main(String args[]) {
+        Thread t1 = new Thread(new Task(), "Thread-1");
+        Thread t2 = new Thread(new Task(), "Thread-2");
+        t1.start();
+        t2.start();
+    }
+
+    synchronized public static void increment() {
+        i++;
+        System.out.println(Thread.currentThread().getName() + " : " + i);
+    }
+}
+
+class Task implements Runnable {
+    @Override
+    public void run() {
+        for (int i=0; i<5; i++) {
+            MethodSync.increment();
+        }
+    }
+}
+
