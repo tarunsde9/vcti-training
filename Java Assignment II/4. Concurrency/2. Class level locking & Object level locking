@@ -1,0 +1,54 @@
+package q2.classlock;
+
+public class Main {
+    public static void main(String[] args) {
+
+        DemoObj demoObj = new DemoObj();
+        DemoObj demoObj1 = new DemoObj();
+
+        Thread t1 = new Thread(() -> demoObj.func(), "Thread-1");
+        Thread t2 = new Thread(() -> demoObj1.func(), "Thread-2");
+
+        t1.start();
+        t2.start();
+    }
+}
+
+class DemoObj {
+    public synchronized static void func() {
+        System.out.println(Thread.currentThread().getName());
+    }
+}
+
+package q2.objectlock;
+
+public class Main {
+    public static void main(String[] args) {
+        DemoObj demoObj = new DemoObj();
+        DemoObj demoObj1 = new DemoObj();
+        Thread t1 = new Thread(() -> {
+            try {
+                demoObj.func();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }, "Thread-1");
+        Thread t2 = new Thread(() -> {
+            try {
+                demoObj1.func();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }, "Thread-2");
+
+        t1.start();
+        t2.start();
+    }
+}
+
+class DemoObj {
+    public synchronized void func() throws InterruptedException {
+        System.out.println(Thread.currentThread().getName());
+        Thread.sleep(1000);
+    }
+}
