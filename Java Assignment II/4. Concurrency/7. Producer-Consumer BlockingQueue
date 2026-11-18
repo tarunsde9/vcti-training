@@ -1,0 +1,59 @@
+package E6;
+
+import java.util.concurrent.LinkedBlockingQueue;
+
+public class Main {
+    public static void main(String[] args) {
+        LinkedBlockingQueue<Integer> queue = new LinkedBlockingQueue<>();
+
+        new ProducerQueue(queue);
+        new ConsumerQueue(queue);
+    }
+}
+
+class ProducerQueue implements Runnable {
+    LinkedBlockingQueue<Integer> queue;
+    public ProducerQueue(LinkedBlockingQueue<Integer> queue) {
+        this.queue = queue;
+        Thread t = new Thread(this, "producer");
+        t.start();
+    }
+
+    public void run() {
+        int i=0;
+        while (true) {
+            try {
+                queue.put(i);
+                System.out.println("Set: " + i);
+                i++;
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                break;
+            }
+        }
+    }
+}
+
+class ConsumerQueue implements Runnable {
+    LinkedBlockingQueue<Integer> queue;
+
+    public ConsumerQueue(LinkedBlockingQueue<Integer> queue) {
+        this.queue = queue;
+        Thread t = new Thread(this, "consumer");
+        t.start();
+    }
+
+    public void run() {
+        while (true) {
+            try {
+                int value = queue.take();
+                System.out.println("Get: " + value);
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                break;
+            }
+        }
+    }
+}
