@@ -1,0 +1,30 @@
+public class Q4 {
+
+    public static void main(String[] args) {
+        Q4 q4 = new Q4();
+        q4.methodA();
+    }
+
+    void methodA() {
+        try {
+            methodB();
+        } catch (CustomException e) {
+            System.out.println(e.getMessage());
+            System.out.println("Exception propagated to methodA");
+        } catch (Exception e) { }
+    }
+
+    void methodB() throws Exception {
+        methodC();
+    }
+
+    void methodC() throws Exception {
+        throw new CustomException("Exception from methodC");
+    }
+}
+
+class CustomException extends Exception {
+    public CustomException(String message) {
+        super(message);
+    }
+}
