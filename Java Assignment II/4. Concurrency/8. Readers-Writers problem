@@ -1,0 +1,88 @@
+package q8;
+
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+public class SharedResource {
+    private int data = 0;
+
+    private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+
+    public void read() {
+        lock.readLock().lock();
+
+        try {
+            System.out.println(Thread.currentThread().getName() + " reading: " + data);
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
+
+    public void write(int value) {
+        lock.writeLock().lock();
+
+        try {
+            data = value;
+            System.out.println(Thread.currentThread().getName() + " writing: " + data);
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+}
+
+class Reader implements Runnable {
+
+    private SharedResource resource;
+
+    public Reader(SharedResource resource) {
+        this.resource = resource;
+    }
+
+    public void run() {
+        resource.read();
+    }
+}
+
+class Writer implements Runnable {
+
+    private SharedResource resource;
+    private int value;
+
+    public Writer(SharedResource resource, int value) {
+        this.resource = resource;
+        this.value = value;
+    }
+
+    public void run() {
+        resource.write(value);
+    }
+}
+
+package q8;
+
+public class Main {
+
+    public static void main(String[] args) {
+
+        SharedResource resource = new SharedResource();
+
+        Thread r1 = new Thread(new Reader(resource), "Reader-1");
+        Thread r2 = new Thread(new Reader(resource), "Reader-2");
+        Thread r3 = new Thread(new Reader(resource), "Reader-3");
+
+        Thread w1 = new Thread(new Writer(resource, 100), "Writer-1");
+        Thread w2 = new Thread(new Writer(resource, 200), "Writer-2");
+
+        r1.start();
+        r2.start();
+        r3.start();
+
+        w1.start();
+        w2.start();
+    }
+}
