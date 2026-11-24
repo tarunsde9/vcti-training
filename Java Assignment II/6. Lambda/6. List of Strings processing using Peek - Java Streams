@@ -1,0 +1,24 @@
+package q6;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+
+public class Main {
+    public static void main(String[] args) {
+        Path filePath = Path.of("C:\\Users\\tarun.kumar\\Downloads\\ja-lambda\\src\\Q3\\words.txt");
+        try {
+            List<String> words = Files.readAllLines(filePath);
+            words.stream()
+                    .peek(word -> System.out.print(word.length() + " "))
+                    .map(word -> word.toUpperCase())
+                    .forEach(word -> {
+                        System.out.print(word);
+                        System.out.println();
+                    });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
