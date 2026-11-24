@@ -1,0 +1,33 @@
+package q5;
+
+import java.util.List;
+import java.util.Random;
+
+public class Main {
+    public static void main(String[] args) {
+        List<Integer> numbers = new Random()
+                .ints(10000000, 1, 99)
+                .boxed()
+                .toList();
+
+        long start = System.nanoTime();
+        long sequentialSum = numbers.stream()
+                .mapToLong(Integer::longValue)
+                .sum();
+        long sequentialTime = System.nanoTime()-start;
+
+        start = System.nanoTime();
+        long parallelSum = numbers.parallelStream()
+                .mapToLong(Integer::longValue)
+                .sum();
+        long parallelTime = System.nanoTime()-start;
+
+        System.out.println("Sequential Sum: " + sequentialSum);
+        System.out.println("Parallel Sum: " + parallelSum);
+
+        System.out.println("Sequential Time: " + sequentialTime / 1_000_000.0 + " ms");
+        System.out.println("Parallel Time: " + parallelTime / 1_000_000.0 + " ms");
+
+    }
+}
+  
