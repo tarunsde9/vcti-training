@@ -1,0 +1,27 @@
+package Q3;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+public class Main {
+    public static void main(String[] args) {
+        Path filePath = Path.of("C:\\Users\\tarun.kumar\\Downloads\\ja-lambda\\src\\Q3\\words.txt");
+        
+        try {
+            List<String> words = Files.readAllLines(filePath);
+            Map<Character, Long> result = words.stream()
+                    .collect(Collectors.groupingBy(
+                            word -> word.charAt(0),
+                            Collectors.counting()
+                    ));
+
+            result.forEach((letter, count) -> System.out.println(letter + " = " + count));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
